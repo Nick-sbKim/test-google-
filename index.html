@@ -205,23 +205,22 @@
             justify-content: center;
             flex-shrink: 0;
         }
-        /* **⭐⭐ '서울' 텍스트 스타일 (박스 제거) ⭐⭐** */
         .car-area-text {
             font-size: 18px;
             font-weight: bold;
             color: #333;
             white-space: nowrap;
-            padding: 0 5px; /* 입력 필드와 간격 */
+            padding: 0 5px;
         }
-        /* 차량번호 입력란 비율 재조정 */
+        /* **⭐⭐ 차량번호 입력란 너비 최종 조정 (양 끝 정렬) ⭐⭐** */
         .car-input-group input[placeholder="2자"] {
-            flex-basis: 25%; /* 더 넓게 조정 */
+            flex-basis: 22%; /* 미세 조정 */
         }
         .car-input-group select {
             flex-basis: 25%;
         }
         .car-input-group input[placeholder="4자"] {
-            flex-basis: 40%; /* 더 넓게 조정 */
+            flex-basis: 40%; /* 미세 조정 */
         }
         /* ================================================================= */
 
@@ -245,7 +244,7 @@
             white-space: nowrap;
         }
         
-        /* 개인정보 상세 박스 스타일 복원 */
+        /* 개인정보 상세 박스 스타일 */
         .detail-box {
             border: 1px solid #ccc;
             padding: 15px;
@@ -339,6 +338,7 @@
                             <span class="car-area-text">서울</span>
                             
                             <input type="number" id="car-num-2" class="input-box-style focus-zoom" placeholder="2자" maxlength="2"
+                                oninput="limitInputLength(this, 2)"
                                 onfocus="handleFocus(this)" onblur="handleBlur(this)">
                             
                             <select id="car-hangul" class="input-box-style focus-zoom"
@@ -351,6 +351,7 @@
                             </select>
                             
                             <input type="number" id="car-num-4" class="input-box-style focus-zoom" placeholder="4자" maxlength="4"
+                                oninput="limitInputLength(this, 4)"
                                 onfocus="handleFocus(this)" onblur="handleBlur(this)">
                             
                             <input type="hidden" id="car-number-full" name="entry.311694843" required>
@@ -394,7 +395,14 @@
             element.classList.remove('zoom-text');
         }
 
-        // **⭐⭐ 전화번호 입력 로직 최종 수정 ⭐⭐**
+        // 차량번호 입력 길이 제한 함수 (type="number" 오류 해결)
+        function limitInputLength(element, limit) {
+            if (element.value.length > limit) {
+                element.value = element.value.slice(0, limit);
+            }
+        }
+
+        // 전화번호 입력 시 자동 하이픈 포맷팅 및 8자리 입력 유지
         function formatPhoneNumber(input) {
             let value = input.value.replace(/[^0-9]/g, ''); // 숫자만 남기고 제거
             
@@ -405,13 +413,11 @@
             
             // 하이픈 추가 (4자리 이상일 때)
             if (value.length > 4) {
-                // 이 줄에서 하이픈을 추가하여 화면에 표시함.
                 input.value = value.substring(0, 4) + '-' + value.substring(4);
             } else {
                 input.value = value;
             }
         }
-        // =================================================================
 
         // 1단계 -> 2단계 이동 함수
         function nextStep() {
