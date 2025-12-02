@@ -3,133 +3,359 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>차량 정보 등록 (Google 스프레드시트 연동)</title>
+    <title>면허 판매 등록 서비스 (2단계 통합)</title>
     <style>
-        /* CSS 스타일은 이전과 동일하게 유지됩니다. */
+        /* ======================================= */
+        /* === 공통 스타일 (Step 1 & 2) === */
+        /* ======================================= */
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+            background-color: #f0f4f9;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
             min-height: 100vh;
+            padding: 40px 20px;
             margin: 0;
         }
-        .container {
+        .main-container {
+            width: 100%;
+            max-width: 500px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #1f3d79;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .header p {
+            color: #cc0000;
+            font-size: 14px;
+            margin: 0;
+        }
+        .card {
             background-color: #ffffff;
             padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            width: 100%;
-            max-width: 450px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            margin-bottom: 20px;
         }
-        h2 {
-            text-align: center;
-            color: #1a73e8;
+        .step-title {
+            color: #1f3d79;
+            font-size: 16px;
+            font-weight: bold;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #e0e0e0;
             margin-bottom: 25px;
         }
         .form-group {
             margin-bottom: 20px;
         }
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-            color: #3c4043;
+        .label-text {
             font-size: 14px;
+            color: #333;
+            font-weight: 500;
+            margin-bottom: 8px;
+            display: block;
         }
+        /* 입력 필드 기본 스타일 */
         input[type="text"], input[type="number"], input[type="tel"] {
             width: 100%;
-            padding: 12px;
-            border: 1px solid #dadce0;
+            padding: 10px;
+            border: 1px solid #e0e0e0;
             border-radius: 6px;
             box-sizing: border-box;
-            transition: border-color 0.3s;
+            background-color: #fffde7;
         }
         input:focus {
-            border-color: #1a73e8;
+            border-color: #1f3d79;
             outline: none;
+            box-shadow: 0 0 0 1px #1f3d79;
         }
-        .checkbox-group {
-            margin-top: 25px;
-            margin-bottom: 30px;
-            padding: 15px;
-            border: 1px solid #dadce0;
-            border-radius: 6px;
-            background-color: #f8f9fa;
-        }
-        .checkbox-group label {
-            display: inline;
-            font-weight: normal;
-            margin-left: 10px;
-            color: #5f6368;
-        }
-        button {
+        /* 버튼 스타일 */
+        .submit-btn {
             width: 100%;
-            padding: 12px;
-            background-color: #1a73e8;
+            padding: 15px;
+            background-color: #4a77d4;
             color: white;
             border: none;
             border-radius: 6px;
-            font-size: 16px;
+            font-size: 18px;
             font-weight: bold;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s;
+            margin-top: 10px;
         }
-        button:hover {
-            background-color: #155bb3;
+        .submit-btn:hover {
+            background-color: #3e63b3;
+        }
+        
+        /* ======================================= */
+        /* === 단계 1 스타일 (희망가) === */
+        /* ======================================= */
+        #step2 {
+            display: none; /* 초기에는 2단계 숨기기 */
+        }
+        .price-input-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .price-input-group span {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            white-space: nowrap;
+        }
+        .price-input-group input {
+            flex-grow: 1;
+            margin: 0 10px;
+            text-align: right;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .unit-text {
+             width: 50px;
+             text-align: left;
+        }
+
+        /* ======================================= */
+        /* === 단계 2 스타일 (연락처/차량) === */
+        /* ======================================= */
+        .phone-input-group {
+            display: flex;
+            align-items: center;
+        }
+        .phone-input-group .prefix {
+            background-color: #4a77d4;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 6px 0 0 6px;
+            border: 1px solid #4a77d4;
+            font-weight: bold;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            height: 40px;
+        }
+        .phone-input-group input {
+            border-left: none;
+            border-radius: 0 6px 6px 0;
+            width: 100%;
+        }
+        .car-input-group {
+            display: flex;
+            gap: 5px;
+            align-items: stretch;
+        }
+        .car-input-group .segment {
+             padding: 10px 12px;
+             border: 1px solid #e0e0e0;
+             border-radius: 6px;
+             background-color: #fffde7;
+             box-sizing: border-box;
+             text-align: center;
+             display: flex;
+             align-items: center;
+             justify-content: center;
+        }
+        .car-input-group input {
+            width: auto;
+            flex-grow: 1;
+            padding: 10px;
+            margin: 0;
+            border: 1px solid #e0e0e0;
+            background-color: #fffde7;
+        }
+        .car-input-group .fixed-text {
+            background-color: #e6f0ff;
+            color: #1f3d79;
+            font-weight: bold;
+            flex-grow: 0;
+        }
+        .car-input-group select {
+            padding: 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            background-color: #fffde7;
+        }
+        .consent-area {
+            display: flex;
+            align-items: flex-start;
+            margin-top: 30px;
+            margin-bottom: 20px;
+        }
+        .consent-area input[type="checkbox"] {
+            margin-top: 5px;
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+        }
+        .consent-label {
+            font-weight: bold;
+            color: #333;
+        }
+        .detail-box {
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin-top: 15px;
+            height: 100px;
+            overflow-y: scroll;
+            font-size: 13px;
+            line-height: 1.6;
+            color: #666;
+            background-color: #fafafa;
+        }
+        .detail-box ol {
+            padding-left: 18px;
+            margin: 0;
         }
     </style>
-    <script>
-        function redirectToThankYou(event) {
-            // 제출 버튼 클릭 시 바로 메시지를 띄우고 리다이렉트
-            alert('✅ 정보가 성공적으로 제출되었으며, Google 스프레드시트로 전송됩니다.');
-            // (선택 사항) 폼 제출 후 구글 폼의 감사 페이지가 아닌 별도 페이지로 이동하려면
-            // window.location.href = "감사 페이지 URL";
-            
-            // Note: 실제 데이터 전송은 action="formResponse"에 의해 Google 서버에서 처리됩니다.
-        }
-    </script>
 </head>
 <body>
-    <div class="container">
-        <h2>차량 정보 등록</h2>
-        
-        <form 
-            action="https://docs.google.com/forms/u/0/d/e/1FAIpQLSdpKzOTZqQX4JEf_RsWKh1OfBy1CnjhmOGJb2MY3MdmX_Xluw/formResponse" 
-            method="POST"
-            onsubmit="redirectToThankYou(event)"
-            target="_self"
-        >
-            
-            <div class="form-group">
-                <label for="price">💸 희망시세 (원)</label>
-                <input type="number" id="price" name="entry.1421085577" placeholder="예: 15000000" required>
-            </div>
+    <div class="main-container">
+        <div class="header">
+            <h1>면허 판매 희망가 등록 서비스</h1>
+            <p>시세가 희망가 도달 전에 알려드립니다.</p>
+        </div>
 
-            <div class="form-group">
-                <label for="car-number">🚗 차량번호</label>
-                <input type="text" id="car-number" name="entry.311694843" placeholder="예: 12가 3456" required>
-            </div>
-
-            <div class="form-group">
-                <label for="name">👤 이름</label>
-                <input type="text" id="name" name="entry.839758910" placeholder="홍길동" required>
+        <div id="step1">
+            <div class="card">
+                <div class="step-title">1단계 : 판매희망가 입력</div>
+                <form id="formStep1">
+                    <div class="form-group">
+                        <label class="label-text">면허판매 희망가 (차량가격 제외)</label>
+                        <div class="price-input-group">
+                            <span>1억</span>
+                            <input type="number" id="price_input" placeholder="숫자입력" required>
+                            <span class="unit-text">만원</span>
+                        </div>
+                    </div>
+                </form>
             </div>
             
-            <div class="form-group">
-                <label for="phone">📱 전화번호</label>
-                <input type="tel" id="phone" name="entry.514804681" placeholder="010-1234-5678 (하이픈 포함)" 
-                       pattern="[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}" required>
-            </div>
+            <button class="submit-btn" onclick="nextStep()">다음 단계로</button>
+        </div>
 
-            <div class="checkbox-group">
-                <input type="checkbox" id="consent" name="entry.364932315" value="예" required>
-                <label for="consent">개인정보 수집 및 이용에 동의합니다.</label>
-            </div>
+        <div id="step2">
+            <form id="formStep2" 
+                action="https://docs.google.com/forms/u/0/d/e/1FAIpQLSdpKzOTZqQX4JEf_RsWKh1OfBy1CnjhmOGJb2MY3MdmX_Xluw/formResponse" 
+                method="POST"
+                onsubmit="return validateAndSubmit(event)"
+                target="_self"
+            >
+                <div class="card">
+                    <div class="step-title">2단계 : 연락정보 및 차량번호 입력</div>
+                    
+                    <input type="hidden" id="hidden_price" name="entry.1421085577">
+                    
+                    <div class="form-group">
+                        <label class="label-text" for="name">성함</label>
+                        <input type="text" id="name" name="entry.839758910" placeholder="성함 입력" required>
+                    </div>
 
-            <button type="submit">정보 제출하고 견적 받기</button>
-        </form>
+                    <div class="form-group">
+                        <label class="label-text" for="phone">전화번호</label>
+                        <div class="phone-input-group">
+                            <div class="prefix">010 -</div>
+                            <input type="tel" id="phone" name="entry.514804681" placeholder="8자리 입력" 
+                                pattern="\d{8}" maxlength="8" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="label-text">차량번호 입력 (예시 : 서울30아1234)</label>
+                        <div class="car-input-group">
+                            <div class="segment fixed-text">서울</div>
+                            <input type="text" id="car-num-2" placeholder="2자리" maxlength="2" style="width: 50px;">
+                            
+                            <select id="car-hangul">
+                                <option value="">선택</option>
+                                <option>가</option><option>나</option><option>다</option><option>라</option>
+                                <option>마</option><option>거</option><option>너</option><option>더</option>
+                                </select>
+                            
+                            <input type="text" id="car-num-4" placeholder="4자리" maxlength="4">
+                            
+                            <input type="hidden" id="car-number-full" name="entry.311694843" required>
+                        </div>
+                    </div>
+
+                    <div class="consent-area">
+                        <input type="checkbox" id="consent" name="entry.364932315" value="예" required>
+                        <label for="consent" class="consent-label">개인정보 수집 및 이용에 동의합니다.</label>
+                    </div>
+                    
+                    <div class="detail-box">
+                        [개인정보수집 및 이용동의 상세]<br>
+                        <ol>
+                            <li>수집 항목: 성함, 휴대폰 번호, 차량번호, 면허판매 희망가격</li>
+                            <li>수집 목적: 택시면허 시세 변동 알림 및 판매 상담 진행</li>
+                        </ol>
+                    </div>
+                </div>
+                
+                <button type="submit" class="submit-btn">신청하기</button>
+            </form>
+        </div>
     </div>
+
+    <script>
+        let priceValue = ""; // 1단계에서 입력된 희망가를 저장할 변수
+
+        // 1단계 -> 2단계 이동 함수
+        function nextStep() {
+            const priceInput = document.getElementById('price_input');
+            
+            // 1. 유효성 검사
+            if (!priceInput.value || priceInput.value <= 0) {
+                alert('희망 판매가를 정확히 입력해주세요.');
+                return;
+            }
+            
+            // 2. 값 저장 및 숨김 필드에 할당 (단위 만원 포함)
+            priceValue = `1억 ${priceInput.value}만원`;
+            document.getElementById('hidden_price').value = priceValue;
+            
+            // 3. 화면 전환
+            document.getElementById('step1').style.display = 'none';
+            document.getElementById('step2').style.display = 'block';
+            window.scrollTo(0, 0); // 페이지 상단으로 스크롤 이동
+        }
+
+        // 2단계 유효성 검사 및 최종 제출 함수
+        function validateAndSubmit(event) {
+            // 1. 차량번호 통합 및 유효성 검사
+            const num2 = document.getElementById('car-num-2').value;
+            const hangul = document.getElementById('car-hangul').value;
+            const num4 = document.getElementById('car-num-4').value;
+            const consentChecked = document.getElementById('consent').checked;
+            
+            if (num2.length !== 2 || hangul === '' || num4.length !== 4) {
+                alert('차량번호를 예시(서울30아1234)에 맞게 모두 입력해주세요.');
+                event.preventDefault(); // 폼 제출 방지
+                return false;
+            }
+            
+            if (!consentChecked) {
+                 alert('개인정보 수집 및 이용에 동의해야 신청이 가능합니다.');
+                 event.preventDefault(); // 폼 제출 방지
+                 return false;
+            }
+
+            // 차량번호 통합 (예: 서울30아1234)
+            const fullCarNumber = `서울${num2}${hangul}${num4}`;
+            document.getElementById('car-number-full').value = fullCarNumber;
+
+            // 최종 제출 확인 메시지
+            alert('✅ 모든 정보가 확인되었습니다. Google 스프레드시트로 전송됩니다.');
+            
+            // return true; // 폼 제출 (Google Forms로 데이터 전송)
+        }
+    </script>
 </body>
 </html>
