@@ -12,7 +12,8 @@
         /* === 공통 스타일 (Step 1 & 2) === */
         /* ======================================= */
         body {
-            font-family: 'NanumSquareEB', 'Malgun Gothic', '맑은 고딕', sans-serif;
+            /* **⭐⭐ 모든 글꼴을 'NanumSquareEB'로 통일 ⭐⭐** */
+            font-family: 'NanumSquareEB', sans-serif;
             background-color: #f0f4f9;
             display: flex;
             justify-content: center;
@@ -76,20 +77,26 @@
             font-size: 18px;
             transition: all 0.2s ease-in-out;
             text-align: center;
-            /* 드롭다운 화살표를 중앙에 위치시키기 위해 필요 */
+            /* 기본 드롭다운/화살표 제거 */
             -webkit-appearance: none; 
             -moz-appearance: none;
             appearance: none;
-            /* 커스텀 드롭다운 화살표 (선택적) */
-            background-image: url('data:image/svg+xml;utf8,<svg fill="%23333333" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18px" height="18px"><path d="M7 10l5 5 5-5z"/></svg>');
-            background-repeat: no-repeat;
-            background-position: right 8px center;
+            /* 기본 화살표 배경 이미지 제거 */
+            background-image: none;
         }
         .input-box-style:focus {
             border-color: #007bff;
             background-color: #e6f7ff;
             box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.25);
             outline: none;
+        }
+
+        /* 차량번호 선택 필드에만 드롭다운 화살표 표시 */
+        #car-hangul {
+            /* 커스텀 드롭다운 화살표 다시 적용 */
+            background-image: url('data:image/svg+xml;utf8,<svg fill="%23333333" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18px" height="18px"><path d="M7 10l5 5 5-5z"/></svg>');
+            background-repeat: no-repeat;
+            background-position: right 8px center;
         }
         
         /* JS 돋보기 효과를 위한 폰트 사이즈 확대 클래스 */
@@ -98,12 +105,13 @@
             font-weight: 900 !important;
         }
 
-        /* 숫자 입력 필드 스피너 제거 */
+        /* 숫자 입력 필드 스피너 제거 (Webkit) */
         input[type=number]::-webkit-inner-spin-button, 
         input[type=number]::-webkit-outer-spin-button { 
             -webkit-appearance: none;
             margin: 0;
         }
+        /* 숫자 입력 필드 스피너 제거 (Firefox) */
         input[type=number] {
             -moz-appearance: textfield;
         }
@@ -220,6 +228,7 @@
             white-space: nowrap;
             padding: 0 5px;
         }
+        /* 차량번호 입력란 너비 최종 조정 (양 끝 정렬) */
         .car-input-group input[placeholder="2자"] {
             flex-basis: 22%;
         }
@@ -505,8 +514,7 @@
             // 4. 모든 검증 통과 시
             submitted = true; // 제출 플래그 설정
             
-            // 폼은 숨겨진 iframe으로 제출됩니다. (Google Forms로 데이터 전송)
-            // 제출 완료 후, iframe의 onload 이벤트가 `redirectToThankYou` 함수를 호출합니다.
+            // 폼 제출 진행 (Google Forms로 데이터 전송)
             
             return true;
         }
