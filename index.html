@@ -140,7 +140,7 @@
         .price-instruction {
             color: #cc0000; 
             font-size: 16px; 
-            margin-bottom: 30px; /* **간격 크게 확대** */
+            margin-bottom: 30px;
             text-align: center;
             font-weight: bold;
             display: block;
@@ -205,24 +205,23 @@
             justify-content: center;
             flex-shrink: 0;
         }
-        .car-input-group .fixed-text-box {
-            background-color: #4a77d4;
-            color: white;
-            font-weight: bold;
-            padding: 0 12px;
-            border-radius: 6px;
+        /* **⭐⭐ '서울' 텍스트 스타일 (박스 제거) ⭐⭐** */
+        .car-area-text {
             font-size: 18px;
-            flex-basis: 18%; 
+            font-weight: bold;
+            color: #333;
+            white-space: nowrap;
+            padding: 0 5px; /* 입력 필드와 간격 */
         }
-        /* **⭐⭐ 차량번호 입력란 비율 재조정 및 가이드 문구 축소 반영 ⭐⭐** */
+        /* 차량번호 입력란 비율 재조정 */
         .car-input-group input[placeholder="2자"] {
-            flex-basis: 20%; /* 여백을 조금 더 확보 */
+            flex-basis: 25%; /* 더 넓게 조정 */
         }
         .car-input-group select {
             flex-basis: 25%;
         }
         .car-input-group input[placeholder="4자"] {
-            flex-basis: 35%; /* 여백을 조금 더 확보 */
+            flex-basis: 40%; /* 더 넓게 조정 */
         }
         /* ================================================================= */
 
@@ -243,7 +242,7 @@
             font-size: 18px;
             font-weight: bold;
             line-height: 1.5;
-            white-space: nowrap; /* 문구를 한 줄로 유지 */
+            white-space: nowrap;
         }
         
         /* 개인정보 상세 박스 스타일 복원 */
@@ -327,7 +326,7 @@
                         <div class="phone-input-group">
                             <div class="prefix">010 -</div>
                             <input type="tel" id="phone" name="phone_raw" class="input-box-style focus-zoom" style="border-left:none;" placeholder="8자리 입력" 
-                                maxlength="8" pattern="\d{8}" required
+                                maxlength="9" pattern="\d{8}" required
                                 oninput="formatPhoneNumber(this)"
                                 onfocus="handleFocus(this)" onblur="handleBlur(this)">
                             <input type="hidden" id="phone_full" name="entry.514804681">
@@ -337,7 +336,8 @@
                     <div class="form-group">
                         <label class="label-text">차량번호 (예시: 서울12아1234)</label>
                         <div class="car-input-group">
-                            <div class="fixed-text-box">서울</div>
+                            <span class="car-area-text">서울</span>
+                            
                             <input type="number" id="car-num-2" class="input-box-style focus-zoom" placeholder="2자" maxlength="2"
                                 onfocus="handleFocus(this)" onblur="handleBlur(this)">
                             
@@ -394,7 +394,7 @@
             element.classList.remove('zoom-text');
         }
 
-        // **⭐⭐ 전화번호 입력 시 자동 하이픈 포맷팅 및 8자리 입력 문제 해결 로직 ⭐⭐**
+        // **⭐⭐ 전화번호 입력 로직 최종 수정 ⭐⭐**
         function formatPhoneNumber(input) {
             let value = input.value.replace(/[^0-9]/g, ''); // 숫자만 남기고 제거
             
@@ -403,9 +403,9 @@
                  value = value.substring(0, 8);
             }
             
-            // 4자리 - 4자리 형식으로 하이픈 추가
+            // 하이픈 추가 (4자리 이상일 때)
             if (value.length > 4) {
-                // 사용자가 8자리 입력하는 동안 하이픈 포맷이 표시되도록 input.value에 하이픈을 붙여서 표시
+                // 이 줄에서 하이픈을 추가하여 화면에 표시함.
                 input.value = value.substring(0, 4) + '-' + value.substring(4);
             } else {
                 input.value = value;
@@ -441,7 +441,6 @@
         function validateAndSubmit(event) {
             const form = document.getElementById('formStep2');
             
-            // HTML5 기본 유효성 검사 실행
             if (!form.checkValidity()) {
                 form.reportValidity();
                 event.preventDefault();
