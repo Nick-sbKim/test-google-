@@ -77,19 +77,27 @@
             transition: all 0.2s ease-in-out;
             text-align: center;
         }
-        /* **⭐⭐ 돋보기 포커스 스타일 강화 ⭐⭐** */
         .input-box-style:focus {
             border-color: #007bff;
             background-color: #e6f7ff;
             box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.25);
-            /* transform: scale(1.01)은 JS로 개별 적용 */
             outline: none;
         }
         
         /* JS 돋보기 효과를 위한 폰트 사이즈 확대 클래스 */
         .zoom-text {
-            font-size: 24px !important; /* 텍스트 크기 확대 */
+            font-size: 24px !important;
             font-weight: 900 !important;
+        }
+
+        /* **⭐⭐ 숫자 입력 필드 스피너 제거 (화살표 제거) ⭐⭐** */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
         }
 
         input[type="text"], input[type="number"], input[type="tel"], select {
@@ -128,6 +136,16 @@
         #step2 {
             display: none;
         }
+        /* **⭐⭐ 안내 문구와 입력란 사이 간격 조절용 클래스 추가 및 조정 ⭐⭐** */
+        .price-instruction {
+            color: #cc0000; 
+            font-size: 16px; 
+            margin-bottom: 25px; /* **간격 크게 확대** */
+            text-align: center;
+            font-weight: bold;
+            display: block;
+        }
+
         .price-input-group {
             display: flex;
             align-items: center;
@@ -197,13 +215,13 @@
             flex-basis: 18%; 
         }
         .car-input-group input[placeholder="2자리"] {
-            flex-basis: 22%; /* 조정 */
+            flex-basis: 22%; 
         }
         .car-input-group select {
             flex-basis: 25%;
         }
         .car-input-group input[placeholder="4자리"] {
-            flex-basis: 35%; /* 조정 */
+            flex-basis: 35%;
         }
 
         /* 개인정보 동의 영역 */
@@ -217,15 +235,42 @@
             width: 24px;
             height: 24px;
             margin-top: 3px;
-            margin-right: 20px; /* **체크박스와 텍스트 사이 간격 확대** */
+            margin-right: 20px; 
         }
         .consent-label {
             font-size: 18px;
             font-weight: bold;
-            line-height: 1.5; /* 줄 높이 조정 */
+            line-height: 1.5;
+            white-space: nowrap; /* **문구를 한 줄로 유지** */
         }
+        
+        /* **⭐⭐ 개인정보 상세 박스 스타일 복원 및 조정 ⭐⭐** */
         .detail-box {
+            border: 1px solid #ccc;
+            padding: 15px;
+            height: 140px;
+            overflow-y: scroll;
             font-size: 14px;
+            line-height: 1.5;
+            color: #666;
+            background-color: #fafafa;
+            border-radius: 6px;
+        }
+        .detail-box ul {
+            padding-left: 18px;
+            margin: 5px 0 10px 0;
+            list-style-type: decimal;
+        }
+        .detail-box p {
+            font-weight: bold;
+            color: #333;
+            margin-top: 10px;
+            font-size: 15px;
+        }
+        .company-info {
+            font-size: 14px;
+            text-align: right;
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -241,7 +286,7 @@
                 <div class="step-title">1단계 : 판매희망가 입력</div>
                 <form id="formStep1">
                     <div class="form-group">
-                        <p class="label-text" style="color: #cc0000; font-size: 16px; margin-bottom: 5px; text-align: center;">※ 면허가격만 적어주세요.</p>
+                        <span class="price-instruction">※ 면허가격만 적어주세요.</span>
                         
                         <div class="price-input-group">
                             <span>1억</span>
@@ -280,7 +325,7 @@
                         <div class="phone-input-group">
                             <div class="prefix">010 -</div>
                             <input type="tel" id="phone" name="phone_raw" class="input-box-style focus-zoom" style="border-left:none;" placeholder="8자리 입력" 
-                                maxlength="8" required
+                                maxlength="8" pattern="\d{8}" required
                                 oninput="formatPhoneNumber(this)"
                                 onfocus="handleFocus(this)" onblur="handleBlur(this)">
                             <input type="hidden" id="phone_full" name="entry.514804681">
@@ -312,7 +357,7 @@
 
                     <div class="consent-area">
                         <input type="checkbox" id="consent" name="entry.364932315" value="예" required>
-                        <label for="consent" class="consent-label">개인정보 수집 및 이용을 동의합니다</label>
+                        <label for="consent" class="consent-label">개인정보 수집 및 이용 동의</label>
                     </div>
                     
                     <div class="detail-box">
@@ -347,17 +392,22 @@
             element.classList.remove('zoom-text');
         }
 
-        // 전화번호 입력 시 자동 하이픈 포맷팅
+        // 전화번호 입력 시 자동 하이픈 포맷팅 및 8자리만 유지
         function formatPhoneNumber(input) {
             // 숫자만 남기고 제거
             let value = input.value.replace(/[^0-9]/g, ''); 
             
-            // 4자리 - 4자리 형식으로 하이픈 추가 (8자리 완성 시)
-            if (value.length > 4) {
-                value = value.substring(0, 4) + '-' + value.substring(4, 8);
+            // 8자리만 유지
+            if (value.length > 8) {
+                 value = value.substring(0, 8);
             }
-
-            input.value = value;
+            
+            // 4자리 - 4자리 형식으로 하이픈 추가 (4자리 이상일 때)
+            if (value.length > 4) {
+                input.value = value.substring(0, 4) + '-' + value.substring(4);
+            } else {
+                input.value = value;
+            }
         }
 
         // 1단계 -> 2단계 이동 함수
@@ -388,13 +438,14 @@
         function validateAndSubmit(event) {
             const form = document.getElementById('formStep2');
             
+            // HTML5 기본 유효성 검사 실행
             if (!form.checkValidity()) {
                 form.reportValidity();
                 event.preventDefault();
                 return false;
             }
 
-            // 1. 차량번호 통합 및 유효성 검사
+            // 1. 차량번호 통합 및 추가 유효성 검사
             const num2 = document.getElementById('car-num-2').value;
             const hangul = document.getElementById('car-hangul').value;
             const num4 = document.getElementById('car-num-4').value;
@@ -410,7 +461,7 @@
 
             // 2. 전화번호 최종 통합 (010-8자리)
             const phoneInput = document.getElementById('phone');
-            const phoneRaw = phoneInput.value.replace(/[^0-9]/g, ''); // 하이픈 제거
+            const phoneRaw = phoneInput.value.replace(/[^0-9]/g, ''); // 하이픈 제거 후 숫자만 추출
             
             if (phoneRaw.length !== 8) {
                  alert('전화번호 8자리를 정확히 입력해주세요.');
