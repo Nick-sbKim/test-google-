@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>면허 판매 등록 서비스 (어르신 맞춤형)</title>
+    <title>면허 판매 등록 서비스 (어르신 맞춤형, 포커스 강화)</title>
     <style>
         /* ======================================= */
         /* === 공통 스타일 (Step 1 & 2) === */
         /* ======================================= */
-        /* **1. 기본 폰트 및 배경 유지** */
         body {
             font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
             background-color: #f0f4f9;
@@ -29,13 +28,13 @@
         }
         .header h1 {
             color: #1f3d79;
-            font-size: 26px; /* 제목 크기 확대 */
+            font-size: 26px;
             font-weight: bold;
             margin-bottom: 5px;
         }
         .header p {
             color: #cc0000;
-            font-size: 16px; /* 안내 문구 크기 확대 */
+            font-size: 16px;
             margin: 0;
         }
         .card {
@@ -45,42 +44,47 @@
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
             margin-bottom: 20px;
         }
-        /* **2. 단계 제목 크기 확대 (1단계, 2단계 글자)** */
         .step-title {
             color: #1f3d79;
-            font-size: 22px; /* **크게 확대** */
+            font-size: 22px;
             font-weight: bold;
             padding-bottom: 12px;
             border-bottom: 1px dashed #e0e0e0;
             margin-bottom: 30px;
         }
         .form-group {
-            margin-bottom: 25px; /* 항목 간 간격 확대 */
+            margin-bottom: 25px;
         }
-        /* **3. 항목 제목 크기 확대** */
         .label-text {
-            font-size: 18px; /* **항목 제목 크기 확대** */
+            font-size: 18px;
             color: #333;
-            font-weight: bold; /* 굵게 */
+            font-weight: bold;
             margin-bottom: 10px;
             display: block;
         }
-        /* **4. 입력 필드 높이 및 글자 크기 통일** */
+        
         .input-box-style {
-            height: 48px; /* 통일된 높이 */
+            height: 48px;
             padding: 10px 12px;
-            border: 1px solid #e0e0e0;
+            border: 2px solid #e0e0e0; /* 테두리 두께 강화 */
             border-radius: 6px;
             box-sizing: border-box;
             background-color: #fffde7;
-            font-size: 18px; /* 입력 텍스트 크기 확대 */
+            font-size: 18px;
+            transition: all 0.2s ease-in-out; /* 포커스 애니메이션 추가 */
         }
         input[type="text"], input[type="number"], input[type="tel"], select {
-            /* input-box-style 클래스의 속성을 상속받고 필요한 부분만 수정 */
             width: 100%;
-            /* 아래 속성들은 JavaScript로 height가 설정되도록 스타일링에서 제거 */
         }
         
+        /* ⭐⭐ 새로 추가된/수정된 부분: 포커스 토글 효과 ⭐⭐ */
+        .input-box-style:focus {
+            border-color: #007bff; /* 포커스 시 테두리 색상 파란색으로 변경 */
+            background-color: #e6f7ff; /* 포커스 시 배경색 아주 밝게 변경 */
+            box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.25); /* 주변에 부드러운 빛 추가 */
+            transform: scale(1.01); /* 아주 미세하게 확대되는 효과 (돋보기 느낌) */
+            outline: none; /* 기본 브라우저 포커스 테두리 제거 */
+        }
         /* ======================================= */
         /* === 단계 1 스타일 (희망가) === */
         /* ======================================= */
@@ -93,7 +97,7 @@
             justify-content: space-between;
         }
         .price-input-group span {
-            font-size: 18px; /* 글자 크기 확대 */
+            font-size: 18px;
             font-weight: bold;
             color: #333;
             white-space: nowrap;
@@ -110,7 +114,7 @@
         /* ======================================= */
         .phone-input-group {
             display: flex;
-            align-items: stretch; /* 높이 통일 */
+            align-items: stretch;
             height: 48px;
         }
         .phone-input-group .prefix {
@@ -123,43 +127,35 @@
             white-space: nowrap;
             display: flex;
             align-items: center;
-            font-size: 18px; /* 010- 글자 크기 확대 */
+            font-size: 18px;
         }
         .phone-input-group input {
             border-left: none;
             border-radius: 0 6px 6px 0;
         }
         
-        /* **5. 차량번호 반응형 개선** */
         .car-input-group {
             display: flex;
             gap: 5px;
             align-items: stretch;
-            flex-wrap: nowrap; /* 줄바꿈 방지 */
-            height: 48px; /* 높이 통일 */
+            flex-wrap: nowrap;
+            height: 48px;
         }
         .car-input-group > * {
-            height: 100%; /* 모든 자식 요소 높이 통일 */
+            height: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-shrink: 0; /* 공간이 부족해도 줄어들지 않음 */
+            flex-shrink: 0;
         }
-        .car-input-group .segment {
-            padding: 0 12px;
-            border: 1px solid #e0e0e0;
-            border-radius: 6px;
-            box-sizing: border-box;
-            font-size: 18px; /* 글자 크기 확대 */
-        }
-        /* **'서울' 박스 색상 통일** */
         .car-input-group .fixed-text-box {
-            background-color: #4a77d4; /* 010-과 동일한 색상 */
+            background-color: #4a77d4;
             color: white;
             font-weight: bold;
             padding: 0 12px;
             border-radius: 6px;
             flex-grow: 0;
+            font-size: 18px;
         }
         .car-input-group input, .car-input-group select {
             width: 100%;
@@ -167,12 +163,10 @@
             margin: 0;
             border-radius: 6px;
             text-align: center;
-            background-color: #fffde7;
-            border: 1px solid #e0e0e0;
         }
         .car-input-group select {
             padding: 0 2px;
-            flex-basis: 30%; /* 한글 선택 박스 비율 조정 */
+            flex-basis: 30%;
         }
         .car-input-group input[placeholder="2자리"] {
             flex-basis: 25%;
@@ -180,27 +174,34 @@
         .car-input-group input[placeholder="4자리"] {
             flex-basis: 40%;
         }
-
-        /* **6. 동의 영역 및 버튼 확대** */
         .consent-area {
             margin-top: 35px;
             margin-bottom: 25px;
         }
         .consent-area input[type="checkbox"] {
-            width: 24px; /* 체크박스 크기 확대 */
+            width: 24px;
             height: 24px;
             margin-top: 3px;
         }
         .consent-label {
-            font-size: 18px; /* 동의 문구 크기 확대 */
+            font-size: 18px;
         }
         .detail-box {
-            height: 120px; /* 상세 내용 박스 높이 증가 */
-            font-size: 15px; /* 상세 내용 글자 크기 확대 */
+            height: 120px;
+            font-size: 15px;
         }
         .submit-btn {
-            padding: 18px; /* 버튼 높이 증가 */
-            font-size: 20px; /* 버튼 텍스트 크기 확대 */
+            padding: 18px;
+            font-size: 20px;
+            background-color: #4a77d4;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .submit-btn:hover {
+            background-color: #3e63b3;
         }
     </style>
 </head>
@@ -249,7 +250,7 @@
                         <label class="label-text" for="phone">전화번호</label>
                         <div class="phone-input-group">
                             <div class="prefix">010 -</div>
-                            <input type="tel" id="phone" name="entry.514804681" class="input-box-style" placeholder="8자리 입력" 
+                            <input type="tel" id="phone" name="entry.514804681" class="input-box-style" style="border-left:none;" placeholder="8자리 입력" 
                                 pattern="\d{8}" maxlength="8" required>
                         </div>
                     </div>
@@ -299,33 +300,28 @@
         function nextStep() {
             const priceInput = document.getElementById('price_input');
             
-            // 1. 유효성 검사 (HTML5 기본 유효성 검사 활성화)
             if (!priceInput.checkValidity()) {
                 priceInput.reportValidity();
                 return;
             }
             
-            // 2. 값 저장 및 숨김 필드에 할당 (단위 만원 포함)
             priceValue = `1억 ${priceInput.value}만원`;
             document.getElementById('hidden_price').value = priceValue;
             
-            // 3. 화면 전환
             document.getElementById('step1').style.display = 'none';
             document.getElementById('step2').style.display = 'block';
-            window.scrollTo(0, 0); // 페이지 상단으로 스크롤 이동
+            window.scrollTo(0, 0); 
         }
 
         function validateAndSubmit(event) {
             const form = document.getElementById('formStep2');
             
-            // 1. HTML5 기본 유효성 검사 통과 확인
             if (!form.checkValidity()) {
                 form.reportValidity();
                 event.preventDefault();
                 return false;
             }
 
-            // 2. 차량번호 통합 및 추가 유효성 검사
             const num2 = document.getElementById('car-num-2').value;
             const hangul = document.getElementById('car-hangul').value;
             const num4 = document.getElementById('car-num-4').value;
@@ -336,21 +332,13 @@
                 return false;
             }
 
-            // 차량번호 통합 (예: 서울30아1234)
             const fullCarNumber = `서울${num2}${hangul}${num4}`;
             document.getElementById('car-number-full').value = fullCarNumber;
 
-            alert('✅ 정보가 성공적으로 접수되었습니다. 곧 연락드리겠습니다.');
+            alert('✅ 정보가 성공적으로 접수되었으며, Google 스프레드시트로 전송됩니다.');
             
-            // 폼 제출 (Google Forms로 데이터 전송)
             return true;
         }
-
-        // 모든 입력 필드에 input-box-style 적용 (select 포함)
-        document.querySelectorAll('.input-box-style').forEach(el => {
-            el.style.height = '48px';
-            el.style.fontSize = '18px';
-        });
     </script>
 </body>
 </html>
